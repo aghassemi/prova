@@ -24,9 +24,15 @@ if (command.examples) {
 if (command.browser) {
   nodeRequire('./lib/cli').launch();
   nodeRequire('./lib/browser')([require.main.filename], command);
-} else if ((isNode || isProvaFrame) && !command.tap) {
-  view = isNode ? nodeRequire('./lib/node-reporter') : require('./lib/browser-reporter');
+} else if (isNode && !command.tap) {
+  view = nodeRequire('./lib/node-reporter');
   tape.createStream({ objectMode: true }).pipe(refine()).pipe(view());
+} else if (isProvaFrame) {
+  // create two tape streams for browser, one keeps the original TAP output
+  // the other one is the browser reporter which will send the original TAP output along with structured results
+  var browserRawTapOuputStream = tape.createStream();
+  view = require('./lib/browser-reporter');
+  tape.createStream({ objectMode: true }).pipe(refine()).pipe(view(browserRawTapOuputStream));
 }
 
 if (isNode) {
