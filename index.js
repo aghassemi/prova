@@ -28,11 +28,9 @@ if (command.browser) {
   view = nodeRequire('./lib/node-reporter');
   tape.createStream({ objectMode: true }).pipe(refine()).pipe(view());
 } else if (isProvaFrame) {
-  // create two tape streams for browser, one keeps the original TAP output
-  // the other one is the browser reporter which will send the original TAP output along with structured results
-  var browserRawTapOuputStream = tape.createStream();
+  tape = tape.createHarness();
   view = require('./lib/browser-reporter');
-  tape.createStream({ objectMode: true }).pipe(refine()).pipe(view(browserRawTapOuputStream));
+  tape.createStream({ objectMode: true }).pipe(refine()).pipe(view(tape._results._stream));
 }
 
 if (isNode) {
