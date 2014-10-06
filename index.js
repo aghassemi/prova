@@ -40,17 +40,19 @@ if (isNode) {
 module.exports = prova;
 module.exports.skip = skip;
 module.exports.only = only;
+module.exports.timeout = timeout;
 
 function prova (title, fn) {
   if (command.browser) return;
   if (command.grep && title.indexOf(command.grep) == -1) return skip(title, fn);
   if (isNode) tests.add(title);
-  return tape(title, function (assert) {
+  return tape(title, function (t) {
+    _setupTestTimeout(t);
     try {
       fn.apply(this, arguments);
     } catch (err) {
-      assert.error(err);
-      assert.end();
+      t.error(err);
+      t.end();
       return;
     }
   });
@@ -64,4 +66,20 @@ function only (title, fn) {
   return tape.only(title, fn);
 }
 
+var timeout = 2000;
+function timeout(ms) {
+  timeout = ms;
+}
+
 function empty () {}
+
+function _setupTestTimeout(t) {
+  if(timeout) {
+    setTimeout(function failTestWhenTimedout() {
+      if( t.ended ) {
+        return;
+      }
+      t.end('Timeout, test did not finish in ' + timeout + 'ms');
+    }, timeout);
+  }
+}
