@@ -28,7 +28,9 @@ if (command.browser) {
   view = nodeRequire('./lib/node-reporter');
   tape.createStream({ objectMode: true }).pipe(refine()).pipe(view());
 } else if (isProvaFrame) {
-  tape = tape.createHarness();
+  htape = tape.createHarness();
+  htape.skip = tape.skip;
+  tape = htape;
   view = require('./lib/browser-reporter');
   tape.createStream({ objectMode: true }).pipe(refine()).pipe(view(tape._results._stream));
 }
