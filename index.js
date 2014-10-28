@@ -24,9 +24,13 @@ if (command.examples) {
 if (command.browser) {
   nodeRequire('./lib/cli').launch();
   nodeRequire('./lib/browser')([require.main.filename], command);
-} else if ((isNode || isProvaFrame) && !command.tap) {
-  view = isNode ? nodeRequire('./lib/node-reporter') : require('./lib/browser-reporter');
+} else if (isNode && !command.tap) {
+  view = nodeRequire('./lib/node-reporter');
   tape.createStream({ objectMode: true }).pipe(refine()).pipe(view());
+} else if (isProvaFrame) {
+  tape = tape.createHarness();
+  view = require('./lib/browser-reporter');
+  tape.createStream({ objectMode: true }).pipe(refine()).pipe(view(tape._results._stream));
 }
 
 if (isNode) {
