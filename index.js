@@ -61,6 +61,10 @@ function prova (title, fn) {
 }
 
 function skip (title, fn) {
+  tape(title + ' - skipped ', function(t) {
+    t.skip(title);
+    t.end();
+  });
   return tape.skip(title, fn);
 }
 
