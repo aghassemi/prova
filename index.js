@@ -46,9 +46,10 @@ module.exports.timeout = timeout;
 
 function prova (title, fn) {
   if (command.grep && title.indexOf(command.grep) == -1) return skip(title, fn);
-  if (command.includeFilename) {
-    title = command._ + ' - ' + title;
+  if (command.includeFilename && global._prova_filename) {
+    title = global._prova_filename + ' - ' + title;
   }
+
   return tape(title, function (t) {
     t.test = function() {
       // many reasons for this including:
