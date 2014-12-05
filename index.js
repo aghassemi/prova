@@ -49,9 +49,20 @@ function prova (title, fn) {
   if (command.grep && title.indexOf(command.grep) == -1) return skip(title, fn);
   if (isNode) tests.add(title);
   return tape(title, function (t) {
-    _setupTestTimeout(t);
+    t.test = function() {
+      // many reasons for this including:
+      // tap output does not really support grouping.
+      // prova overrides test() with prova() but t.test creates
+      // a test() internally which is not the Prova version.
+      throw 'Nested tests are not supported.';
+    };
+    t.timeout = function(ms) {
+      t._timeout = ms;
+    };
+
     try {
       fn.apply(this, arguments);
+      _setupTestTimeout(t);
     } catch (err) {
       t.error(err);
       t.end();
@@ -72,20 +83,23 @@ function only (title, fn) {
   return tape.only(title, fn);
 }
 
-var timeout = 2000;
+var globalTimeout = 2000;
 function timeout(ms) {
-  timeout = ms;
+  globalTimeout = ms;
 }
 
 function empty () {}
 
 function _setupTestTimeout(t) {
+  var timeout = t._timeout || globalTimeout;
   if(timeout) {
     setTimeout(function failTestWhenTimedout() {
       if( t.ended ) {
         return;
       }
       t.end('Timeout, test did not finish in ' + timeout + 'ms');
+      // prevents "end was called twice errors"
+      t.end = function() {}
     }, timeout);
   }
 }
