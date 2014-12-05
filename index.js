@@ -54,7 +54,7 @@ function prova (title, fn) {
   if (command.includeFilenameAsPackage && global._prova_filename) {
     var filepath = formatUnicodeDot(global._prova_filename);
     title = formatUnicodeDot(title);
-    filepath = filepath.replace(/\\/g,".");
+    filepath = filepath.replace(/\//g,".");
     title = filepath + ' - ' + title;
   }
 
