@@ -61,14 +61,25 @@ function prova (title, fn) {
       t._timeout = ms;
     };
 
-    try {
+    if(command.stopOnFirstFailure) {
+      t.on('end', function() {
+        if(!t._ok) {
+          throw "Stopping on first failed test because stopOnFirstFailure flag is set";
+        }
+      });
       fn.apply(this, arguments);
-      _setupTestTimeout(t);
-    } catch (err) {
-      t.error(err);
-      t.end();
-      return;
+    } else {
+      try {
+        fn.apply(this, arguments);
+      } catch (err) {
+        t.error(err);
+        t.end();
+        return;
+      }
     }
+
+    _setupTestTimeout(t);
+
   });
 }
 
