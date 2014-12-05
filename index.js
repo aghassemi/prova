@@ -9,19 +9,19 @@ var view, tests;
 empty.skip = empty;
 empty.only = empty;
 
-if (command.launch === true) {
+if (command.launch === true && isNode) {
   nodeRequire('./lib/cli').launch();
   module.exports = empty;
   return;
 }
 
-if (command.examples) {
+if (command.examples && isNode) {
   nodeRequire('./lib/cli').examples();
   module.exports = empty;
   return;
 }
 
-if (command.browser) {
+if (command.browser && isNode) {
   nodeRequire('./lib/cli').launch();
   nodeRequire('./lib/browser')([require.main.filename], command);
 } else if (isNode && !command.tap) {
@@ -45,15 +45,16 @@ module.exports.only = only;
 module.exports.timeout = timeout;
 
 function prova (title, fn) {
-  if (command.browser) return;
   if (command.grep && title.indexOf(command.grep) == -1) return skip(title, fn);
-  if (isNode) tests.add(title);
+  if (command.includeFilename) {
+    title = command._ + ' - ' + title;
+  }
   return tape(title, function (t) {
     t.test = function() {
       // many reasons for this including:
-      // tap output does not really support grouping.
-      // prova overrides test() with prova() but t.test creates
-      // a test() internally which is not the Prova version.
+      // -tap output does not really support grouping.
+      // -prova overrides test() with prova() but t.test createsa test() internally which is not the Prova version so thing like grep wont work
+      // -breaks .only()
       throw 'Nested tests are not supported.';
     };
     t.timeout = function(ms) {
