@@ -44,10 +44,18 @@ module.exports.skip = skip;
 module.exports.only = only;
 module.exports.timeout = timeout;
 
+function formatUnicodeDot(s) {
+  var unicodeDot = '\uFF0E'; //full width unicode dot
+  return s.replace(/\./g, unicodeDot);
+}
+
 function prova (title, fn) {
   if (command.grep && title.indexOf(command.grep) == -1) return skip(title, fn);
-  if (command.includeFilename && global._prova_filename) {
-    title = global._prova_filename + ' - ' + title;
+  if (command.includeFilenameAsPackage && global._prova_filename) {
+    var filepath = formatUnicodeDot(global._prova_filename);
+    title = formatUnicodeDot(title);
+    filepath = filepath.replace(/\\/g,".");
+    title = filepath + ' - ' + title;
   }
 
   return tape(title, function (t) {
