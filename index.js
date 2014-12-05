@@ -1,4 +1,5 @@
 var tape = require('tape');
+var path = require('path');
 var isNode = require("is-node");
 var refine = require("./lib/refine");
 var command = require('./lib/command');
@@ -52,7 +53,8 @@ function formatUnicodeDot(s) {
 function prova (title, fn) {
   if (command.grep && title.indexOf(command.grep) == -1) return skip(title, fn);
   if (command.includeFilenameAsPackage && global._prova_filename) {
-    var filepath = formatUnicodeDot(global._prova_filename);
+    var filepath = global._prova_filename;
+    filepath = filepath.replace(path.extname(filepath), '');
     title = formatUnicodeDot(title);
     filepath = filepath.replace(/\//g,".");
     title = filepath + ' - ' + title;
