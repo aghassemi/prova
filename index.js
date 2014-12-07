@@ -102,7 +102,7 @@ function formatUnicodeDot(s) {
 
 function skip (title, fn) {
   title = formatTitle(title);
-  tape(title + ' - skipped ', function(t) {
+  tape('SKIPPED TEST - ' + title, function(t) {
     t.skip(title);
     t.end();
   });
