@@ -45,21 +45,9 @@ module.exports.skip = skip;
 module.exports.only = only;
 module.exports.timeout = timeout;
 
-function formatUnicodeDot(s) {
-  var unicodeDot = '\uFF0E'; //full width unicode dot
-  return s.replace(/\./g, unicodeDot);
-}
-
 function prova (title, fn) {
   if (command.grep && title.indexOf(command.grep) == -1) return skip(title, fn);
-  if (command.includeFilenameAsPackage && global._prova_filename) {
-    var filepath = global._prova_filename;
-    filepath = filepath.replace(path.extname(filepath), '');
-    filepath = filepath.replace(/^test[^\/]*\//,'');
-    filepath = filepath.replace(/\//g,'.');
-    title = formatUnicodeDot(title);
-    title = filepath + ' - ' + title;
-  }
+  title = formatTitle(title);
 
   return tape(title, function (t) {
     t.test = function() {
@@ -95,7 +83,25 @@ function prova (title, fn) {
   });
 }
 
+function formatTitle(title) {
+  if (command.includeFilenameAsPackage && global._prova_filename) {
+    var filepath = global._prova_filename;
+    filepath = filepath.replace(path.extname(filepath), '');
+    filepath = filepath.replace(/^test[^\/]*\//,'');
+    filepath = filepath.replace(/\//g,'.');
+    title = formatUnicodeDot(title);
+    title = filepath + ' - ' + title;
+  }
+  return title;
+};
+
+function formatUnicodeDot(s) {
+  var unicodeDot = '\uFF0E'; //full width unicode dot
+  return s.replace(/\./g, unicodeDot);
+}
+
 function skip (title, fn) {
+  title = formatTitle(title);
   tape(title + ' - skipped ', function(t) {
     t.skip(title);
     t.end();
