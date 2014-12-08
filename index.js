@@ -90,7 +90,7 @@ function formatTitle(title) {
     filepath = filepath.replace(/^test[^\/]*\//,'');
     filepath = filepath.replace(/\//g,'.');
     title = formatUnicodeDot(title);
-    title = filepath + ' - ' + title;
+    title = filepath + '.' + title;
   }
   return title;
 };
