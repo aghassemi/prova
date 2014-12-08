@@ -113,7 +113,7 @@ function only (title, fn) {
   return tape.only(title, fn);
 }
 
-var globalTimeout = 5000;
+var globalTimeout = 10000;
 function timeout(ms) {
   globalTimeout = ms;
 }
