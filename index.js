@@ -61,7 +61,7 @@ function prova (title, fn, only) {
       t._timeout = ms;
     };
 
-    if(command.stopOnFirstFailure) {
+    if(global._prova_stopOnFirstFailure) {
       t.on('end', function() {
         if(!t._ok) {
           throw "Stopping on first failed test because stopOnFirstFailure flag is set";
@@ -84,7 +84,7 @@ function prova (title, fn, only) {
 }
 
 function formatTitle(title) {
-  if (command.includeFilenameAsPackage && global._prova_filename) {
+  if (global._prova_includeFilenameAsPackage && global._prova_filename) {
     var filepath = global._prova_filename;
     filepath = filepath.replace(path.extname(filepath), '');
     filepath = filepath.replace(/^test[^\/]*\//,'');
