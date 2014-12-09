@@ -45,11 +45,11 @@ module.exports.skip = skip;
 module.exports.only = only;
 module.exports.timeout = timeout;
 
-function prova (title, fn) {
+function prova (title, fn, only) {
   if (command.grep && title.indexOf(command.grep) == -1) return skip(title, fn);
   title = formatTitle(title);
-
-  return tape(title, function (t) {
+  var t = only ? tape.only : tape;
+  return t(title, function (t) {
     t.test = function() {
       // many reasons for this including:
       // -tap output does not really support grouping.
@@ -67,10 +67,10 @@ function prova (title, fn) {
           throw "Stopping on first failed test because stopOnFirstFailure flag is set";
         }
       });
-      fn.apply(this, arguments);
+      fn.call(this, t);
     } else {
       try {
-        fn.apply(this, arguments);
+        fn.call(this, t);
       } catch (err) {
         t.error(err);
         t.end();
@@ -110,7 +110,7 @@ function skip (title, fn) {
 }
 
 function only (title, fn) {
-  return tape.only(title, fn);
+  return prova(title, fn, true);
 }
 
 var globalTimeout = 10000;
