@@ -44,7 +44,8 @@
     "dom-event": "0.0.0",
     "component-delegate": "^0.2.2",
     "single-line-log": "^0.4.1",
-    "tape": "^3.0.0"
+    "tape": "^3.0.0",
+    "fs-extra": "~0.13.0"
   },
   "keywords": [
     "testing",
