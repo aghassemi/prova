@@ -20,6 +20,10 @@ function receiveMessage (message) {
     fail(message.data);
   }
 
+  if (message.data.type == 'taprow') {
+    taprow(message.data);
+  }
+
   if (message.data.type == 'test') {
     layout.markTest(message.data);
   }
@@ -27,6 +31,10 @@ function receiveMessage (message) {
   if (message.data.type == 'end') {
     end(message.data);
   }
+}
+
+function taprow (tap) {
+  socket.send({ taprow: tap.taprow });
 }
 
 function fail (error) {

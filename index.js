@@ -113,7 +113,7 @@ function only (title, fn) {
   return prova(title, fn, true);
 }
 
-var globalTimeout = 10000;
+var globalTimeout = 20000;
 function timeout(ms) {
   globalTimeout = ms;
 }
