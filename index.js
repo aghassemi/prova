@@ -62,7 +62,7 @@ function prova (title, fn, only) {
     };
 
     if(global._prova_stopOnFirstFailure) {
-      t.on('end', function() {
+      t.once('end', function() {
         if(!t._ok) {
           throw "Stopping on first failed test because stopOnFirstFailure flag is set";
         }
@@ -119,9 +119,12 @@ function empty () {}
 
 function _setupTestTimeout(t) {
   var timeout = t._timeout || globalTimeout;
-  if(timeout) {
-    setTimeout(function failTestWhenTimedout() {
-      if( t.ended ) {
+  if (timeout && !t.ended) {
+    t.once('end', function removeTimoutHandler() {
+      clearTimeout(t.timeoutHandler);
+    });
+    t.timeoutHandler = setTimeout(function failTestWhenTimedout() {
+      if (t.ended) {
         return;
       }
       t.end('Timeout, test did not finish in ' + timeout + 'ms');
