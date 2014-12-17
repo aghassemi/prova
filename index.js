@@ -86,11 +86,8 @@ function prova (title, fn, only) {
 function formatTitle(title) {
   if (global._prova_includeFilenameAsPackage && global._prova_filename) {
     var filepath = global._prova_filename;
-    filepath = filepath.replace(path.extname(filepath), '');
-    filepath = filepath.replace(/^test[^\/]*\//,'');
-    filepath = filepath.replace(/\//g,'.');
     title = formatUnicodeDot(title);
-    title = filepath + '.' + title;
+    title = '[' + filepath + '].' + title;
   }
   return title;
 };
